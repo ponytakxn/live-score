@@ -1,4 +1,4 @@
-const API = 'https://livescore6.p.rapidapi.com/matches/v2/list-by-date?Category=soccer&Date=20220710'
+const API = 'https://livescore6.p.rapidapi.com/matches/v2/list-by-date?Category=basketball&Date=20220710'
 
 const content = null|| document.getElementById('content');
 const content2 = null || document.getElementById('content2')
@@ -20,9 +20,10 @@ async function fetchData(urlApi) {
 (async () => {
     try {
         const matches = await fetchData(API);
+        let baseUrl = 'https://lsm-static-prod.livescore.com/medium/';
         let view = `
         ${matches.Stages.map(match => `
-        <div class="inner-results">
+        <div class="inner-results" id="content2">
             <div class="group-header">
                 <a href="#">
                     <img src="${match.Ccd}" alt="competition">
@@ -32,30 +33,32 @@ async function fetchData(urlApi) {
                     </div>
                 </a>
             </div>
+        ${match.Events.map(event=>`
             <div class="match">
                 <a href="#">
                     <div class="teams">
                         <div class="team-a">
                             <span>
-                                <img src="${match.Events[0].T1.Img}" alt="team-a" class="badge">
+                                <img src="${baseUrl + event.T1[0].Img}" alt="team-a" class="badge">
                             </span>
-                            <div id="home-team">${match.Events[0].T1.Nm}</div>
+                            <div id="home-team">${event.T1[0].Nm}</div>
                         </div>
                         <div class="team-b">
                             <span>
-                                <img src="${match.Events[0].T2.Img}" alt="team-b" class="badge">
+                                <img src="${baseUrl + event.T2[0].Img}" alt="team-b" class="badge">
                             </span>
-                            <div id="away-team">${match.Events[0].T2.Nm}</div>
+                            <div id="away-team">${event.T2[0].Nm}</div>
                         </div>
                     </div>
                     <div class="result">
-                        <div id="home-score">${match.Events[0].Tr1}</div>
-                        <div id="away-score">${match.Events[0].Tr2}</div>
+                        <div id="home-socre">${event.Tr1}</div>
+                        <div id="away-socre">${event.Tr2}</div>
                     </div>
                 </a>
             </div>
+        `).join("<br/>")}
         </div>
-        `)}
+        `).join("<br/>")}
         `;
         content.innerHTML = view;
     } catch (error) {
